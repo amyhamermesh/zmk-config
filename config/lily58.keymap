@@ -2,7 +2,25 @@
  * Copyright (c) 2020 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
+ */ 
+ 
+ /*
+ * Lily58 keymap (ZMK), generated from "Lily58 Keybd Layout.xlsx"
+ *
+ *Designed by and for Amy Hamermesh
+ *
+ * Binding order for the Lily58 (58 keys per layer):
+ *   row 1: number row        6 + 6
+ *   row 2: QWERTY row        6 + 6
+ *   row 3: home row          6 + 6
+ *   row 4: bottom letter row 6 + inner key, inner key + 6   (14 keys)
+ *   row 5: thumb keys        4 + 4
+ *
+ * Home-row mods are plain &mt for now (CAGS order, mirrored on both hands):
+ *   pinky = Ctrl, ring = Alt/Option, middle = GUI/Cmd, index = Shift.
+ * Tune timings and add tap-dance / hold-tap behaviors in the sections below.
  */
+
 
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
@@ -10,66 +28,105 @@
 #include <dt-bindings/zmk/ext_power.h>
 #include <dt-bindings/zmk/rgb.h>
 
+#define QWERTY 0
+#define NUM    1
+#define FUNC   2
+#define KBCTRL 3
+#define MO_TOG(layer) &mo_tog layer layer   // Macro to apply momentary-layer-on-hold/toggle-layer-on-tap to a specific layer
+
+
 &led_strip {
 	chain-length = <35>;
 };
 
+&lt {
+	tapping-term-ms = <200>;
+};
+
+&mt {
+    tapping-term-ms = <200>; // This is the value already set by default
+};
+
 / {
+    behaviors {
+        mo_tog: behavior_mo_tog {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "hold-preferred";
+            tapping-term-ms = <200>;
+            bindings = <&mo>, <&tog>;
+        };
+    };
+
     keymap {
         compatible = "zmk,keymap";
 
-        default_layer {
-// ------------------------------------------------------------------------------------------------------------
-// |  ESC  |  1  |  2  |  3   |  4   |  5   |                   |  6   |  7    |  8    |  9   |   0   |   `   |
-// |  TAB  |  Q  |  W  |  E   |  R   |  T   |                   |  Y   |  U    |  I    |  O   |   P   |   -   |
-// |  CTRL |  A  |  S  |  D   |  F   |  G   |                   |  H   |  J    |  K    |  L   |   ;   |   '   |
-// | SHIFT |  Z  |  X  |  C   |  V   |  B   |   "["  |  |  "]"  |  N   |  M    |  ,    |  .   |   /   | SHIFT |
-//                     | ALT  | GUI  | LOWER|  SPACE |  | ENTER | RAISE| BSPC  | GUI   |
-            bindings = <
-&kp ESC   &kp N1 &kp N2 &kp N3   &kp N4   &kp N5                     &kp N6 &kp N7   &kp N8    &kp N9  &kp N0   &kp GRAVE
-&kp TAB   &kp Q  &kp W  &kp E    &kp R    &kp T                      &kp Y  &kp U    &kp I     &kp O   &kp P    &kp MINUS
-&kp LCTRL &kp A  &kp S  &kp D    &kp F    &kp G                      &kp H  &kp J    &kp K     &kp L   &kp SEMI &kp SQT
-&kp LSHFT &kp Z  &kp X  &kp C    &kp V    &kp B  &kp LBKT   &kp RBKT &kp N  &kp M    &kp COMMA &kp DOT &kp FSLH &kp RSHFT
-                        &kp LALT &kp LGUI &mo 1  &kp SPACE  &kp RET  &mo 2  &kp BSPC &kp RGUI
-            >;
+ 		default_layer {
+			display-name = "QWERTY";
+//	-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//	|	`		|	1		|	2		|	3		|	4		|	5		|									|	6		|	7		|	8		|	9		|	0		|	-		|
+//	|	TAB		|	Q		|	W		|	E		|	R		|	T		|									|	Y		|	U		|	I		|	O		|	P		|	\		|
+//	|	cpWd	|	⌃ A		|	⌥ S		|	⌘ D		|	⇧ F		|	G		|									|	H		|	⇧ J		|	⌘ K		|	⌥ L		|	⌃ ;		|	'		|
+//	|	LCTRL	|	Z		|	X		|	C		|	V		|	B		|	ESC		|			|	DEL		|	N		|	M		|	,		|	.		|	/		|	RSHIFT	|
+//										|	⌥ ⬅		|	⌘ ⮕		|	␣		|	ENTER	|			|	BSPC	|	To NUM	|	⌘ ⬆		|	⌥ ⬇		|
+			bindings = <
+&kp GRAVE	&kp N1		&kp N2		&kp N3			&kp N4			&kp N5							&kp N6		&kp N7		&kp N8			&kp N9		&kp N0			&kp MINUS
+&kp TAB		&kp Q		&kp W		&kp E			&kp R			&kp T							&kp Y		&kp U		&kp I			&kp O		&kp P			&kp BSLH
+&caps_word	&mt LCTRL A	&mt LALT S	&mt LGUI D		&mt LSHFT F		&kp G							&kp H		&mt RSHFT J	&mt RGUI K		&mt RALT L	&mt LCTRL SEMI	&kp SQT
+&kp LCTRL	&kp Z		&kp X		&kp C			&kp V			&kp B		&kp ESC	&kp DEL		&kp N		&kp M		&kp COMMA		&kp DOT		&kp FSLH		&kp RSHFT
+									&mt LALT LEFT	&mt LGUI RIGHT	&kp SPACE	&kp RET	&kp BSPC	MO_TOG(NUM)	&mt LGUI UP	&mt LALT DOWN
+			>;
+		};
 
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
-        };
+		number_layer {
+			display-name = "Num Pad";
+//	-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//	|			|			|	{		|			|	}		|			|									|			|	/		|	*		|	+		|	-		|	⌃ ⌥ ⌦	|
+//	|			|	To KB	|	HOME	|	⬆		|	END		|	PGUP	|									|	\		|	7		|	8		|	9		|	0		|	To QW	|
+//	|	CAPS	|	To QW	|	⬅		|	⬇		|	⮕		|	To QW	|									|	`		|	4		|	5		|	6		|	=		|	None	|
+//	|			|	To FN	|	[		|	⬇		|	]		|	PGDN	|			|			|			|	~		|	1		|	2		|	3		|	ENTER	|	To QW	|
+//										|			|			|			|			|			|			|	.		|			|			|
+			bindings = <
+&trans		&trans		&kp LBRC	&trans		&kp RBRC	&trans						&trans		&kp FSLH	&kp STAR	&kp PLUS	&kp MINUS	&kp LC(LA(DEL))
+&trans		&to KBCTRL	&kp HOME	&kp UP		&kp END		&kp PG_UP					&kp BSLH	&kp N7		&kp N8		&kp N9		&kp N0		&to QWERTY
+&kp CAPS	&to QWERTY	&kp LEFT	&kp DOWN	&kp RIGHT	&to QWERTY					&kp GRAVE	&kp N4		&kp N5		&kp N6		&kp EQUAL	&none
+&trans		&to FUNC	&kp LBKT	&kp DOWN	&kp RBKT	&kp PG_DN	&trans	&trans	&kp TILDE	&kp N1		&kp N2		&kp N3		&kp RET		&to QWERTY
+									&trans		&trans		&trans		&trans	&trans	&kp DOT		&trans		&trans
+			>;
+		};
 
-        lower_layer {
-// ------------------------------------------------------------------------------------------------------------
-// | BTCLR | BT1 | BT2 |  BT3 |  BT4 |  BT5 |                   |      |       |       |      |       |       |
-// |  F1   |  F2 |  F3 |  F4  |  F5  |  F6  |                   |  F7  |  F8   |  F9   |  F10 |  F11  |  F12  |
-// |   `   |  !  |  @  |  #   |  $   |  %   |                   |  ^   |  &    |  *    |  (   |   )   |   ~   |
-// |       |     |     |      |      |      |        |  |       |      |  _    |  +    |  {   |   }   |  "|"  |
-//                     |      |      |      |        |  |       |      |       |       |
-            bindings = <
-&bt BT_CLR &bt BT_SEL 0     &bt BT_SEL 1      &bt BT_SEL 2      &bt BT_SEL 3 &bt BT_SEL 4                 &trans    &rgb_ug RGB_EFR &rgb_ug RGB_TOG &rgb_ug RGB_EFF    &trans    &trans
-&kp F1     &kp F2           &kp F3            &kp F4            &kp F5       &kp F6                       &kp F7    &kp F8    &kp F9    &kp F10   &kp F11   &kp F12
-&kp GRAVE  &kp EXCL         &kp AT            &kp HASH          &kp DOLLAR   &kp PRCNT                    &kp CARET &kp AMPS  &kp ASTRK &kp LPAR  &kp RPAR  &kp TILDE
-&trans     &ext_power EP_ON &ext_power EP_OFF &ext_power EP_TOG &trans       &trans    &trans   &trans    &trans    &kp MINUS &kp PLUS  &kp LBRC  &kp RBRC  &kp PIPE
-                                              &trans            &trans       &trans    &trans   &trans    &trans    &trans    &trans
-            >;
+		fn_layer {
+			display-name = "Function";
+//	-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//	|			|	F1		|	F2		|	F3		|	F4		|	F5		|									|	F6		|	F7		|	F8		|	F9		|	F10		|	F11		|
+//	|			|	Disp+	|	HOME	|	⬆		|	END		|	PGUP	|									|			|			|	Vol+	|			|			|	F12		|
+//	|	CAPS	|	None	|	⬅		|	⬇		|	⮕		|	To QW	|									|			|	PRTSC	|	Vol-	|			|			|			|
+//	|			|	Disp-	|	None	|	⬇		|	None	|	PGDN	|			|			|			|			|			|	Mute	|			|			|			|
+//										|			|			|			|			|			|			|	To QW	|	To NUM	|	To KB	|
+			bindings = <
+&trans		&kp F1			&kp F2		&kp F3		&kp F4		&kp F5						&kp F6		&kp F7			&kp F8			&kp F9	&kp F10	&kp F11
+&trans		&kp C_BRI_UP	&kp HOME	&kp UP		&kp END		&kp PG_UP					&trans		&trans			&kp C_VOL_UP	&trans	&trans	&kp F12
+&kp CAPS	&none			&kp LEFT	&kp DOWN	&kp RIGHT	&to QWERTY					&trans		&kp PRINTSCREEN	&kp C_VOL_DN	&trans	&trans	&trans
+&trans		&kp C_BRI_DN	&none		&kp DOWN	&none		&kp PG_DN	&trans	&trans	&trans		&trans			&kp C_MUTE		&trans	&trans	&trans
+										&trans		&trans		&trans		&trans	&trans	&to QWERTY	&to NUM			&to KBCTRL
+			>;
+		};
 
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
-        };
-
-        raise_layer {
-// ------------------------------------------------------------------------------------------------------------
-// |       |     |     |      |      |      |                   |      |       |       |      |       |       |
-// |   `   |  1  |  2  |  3   |  4   |  5   |                   |  6   |   7   |   8   |  9   |   0   |       |
-// |   F1  |  F2 |  F3 |  F4  |  F5  |  F6  |                   |      |   <-  |   v   |  ^   |  ->   |       |
-// |   F7  |  F8 |  F9 |  F10 |  F11 |  F12 |        |  |       |  +   |   -   |   =   |  [   |   ]   |   \   |
-//                     |      |      |      |        |  |       |      |       |       |
-            bindings = <
-&trans    &trans &trans &trans  &trans  &trans                       &trans      &trans    &trans    &trans   &trans    &trans
-&kp GRAVE &kp N1 &kp N2 &kp N3  &kp N4  &kp N5                       &kp N6      &kp N7    &kp N8    &kp N9   &kp N0    &trans
-&kp F1    &kp F2 &kp F3 &kp F4  &kp F5  &kp F6                       &trans      &kp LEFT  &kp DOWN  &kp UP   &kp RIGHT &trans
-&kp F7    &kp F8 &kp F9 &kp F10 &kp F11 &kp F12   &trans   &trans    &kp KP_PLUS &kp MINUS &kp EQUAL &kp LBKT &kp RBKT  &kp BSLH
-                        &trans  &trans  &trans    &trans   &trans    &trans      &trans    &trans
-            >;
-
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
-        };
+		kb_layer {
+			display-name = "KB Ctrl";
+//	-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//	|	Boot	|			|			|			|			|			|									|			|			|			|			|			|	Boot	|
+//	|	BT CLR	|	BT 0	|	BT 1	|	BT 2	|	BT 3	|	BT 4	|									|			|	Hue+	|	Sat+	|	Bri+	|	Spd+	|			|
+//	|			|	LCTRL	|	LALT	|	LGUI	|	LSHIFT	|	To QW	|									|	Studio	|	FX Prv	|	RGB Tog	|	FX Nxt	|			|			|
+//	|	Reset	|	EP On	|	EP Tog	|	EP Off	|			|			|			|			|			|			|	Hue-	|	Sat-	|	Bri-	|	Spd-	|	Reset	|
+//										|			|			|			|			|			|			|	To QW	|	To NUM	|	To FN	|
+			bindings = <
+&bootloader	&trans				&trans				&trans				&trans			&trans							&trans			&trans			&trans			&trans			&trans			&bootloader
+&bt BT_CLR	&bt BT_SEL 0		&bt BT_SEL 1		&bt BT_SEL 2		&bt BT_SEL 3	&bt BT_SEL 4					&trans			&rgb_ug RGB_HUI	&rgb_ug RGB_SAI	&rgb_ug RGB_BRI	&rgb_ug RGB_SPI	&trans
+&trans		&kp LCTRL			&kp LALT			&kp LGUI			&kp LSHFT		&to QWERTY						&trans			&rgb_ug RGB_EFR	&rgb_ug RGB_TOG	&rgb_ug RGB_EFF	&trans			&trans
+&sys_reset	&ext_power EP_ON	&ext_power EP_TOG	&ext_power EP_OFF	&trans			&trans			&trans	&trans	&trans			&rgb_ug RGB_HUD	&rgb_ug RGB_SAD	&rgb_ug RGB_BRD	&rgb_ug RGB_SPD	&sys_reset
+													&trans				&trans			&trans			&trans	&trans	&to QWERTY		&to NUM			&to FUNC
+			>;
+		};
     };
 };
