@@ -34,6 +34,12 @@
 #define KBCTRL	3
 #define MO_TOG(layer)	&mo_tog layer layer	// Macro to apply momentary-layer-on-hold/toggle-layer-on-tap to a specific layer
 
+// Layer indicator colors (hue 0-359) and brightness (%) for the non-QWERTY layers
+#define HUE_NUM		0	// red
+#define HUE_FUNC	120	// green
+#define HUE_KB		280	// purple
+#define FX_BRT		60
+
 
 &led_strip {
 	chain-length = <35>;
@@ -54,7 +60,7 @@
 			#binding-cells = <2>;
 			flavor = "hold-preferred";
 			tapping-term-ms = <200>;
-			bindings = <&mo>, <&tog>;
+			bindings = <&mo>, <&tog_num_c>;	// hold = plain momentary layer; tap = toggle NUM and set its color
 		};
 
 		hm: homerow_mods {
@@ -91,6 +97,44 @@
 		};
 	};
 
+	macros {
+		// Layer indicator lighting. QWERTY = swirl (effect 3, multicolor); other layers = solid color.
+		// Leaving QWERTY: cycle effect once (swirl -> solid) and set the layer color.
+		// Returning to QWERTY: cycle effect 3 times (solid -> breathe -> spectrum -> swirl).
+		// Don't use the FX Prv/FX Nxt keys while away from QWERTY or the cycle count will be off.
+		// Holding the Num key (momentary) does not change the lights; only toggles and the To keys do.
+
+		tog_num_c: tog_num_c {
+			compatible = "zmk,behavior-macro";
+			#binding-cells = <0>;
+			bindings = <&macro_tap &tog NUM &rgb_ug RGB_EFF &rgb_ug RGB_COLOR_HSB(HUE_NUM,100,FX_BRT)>;
+		};
+
+		to_num_c: to_num_c {
+			compatible = "zmk,behavior-macro";
+			#binding-cells = <0>;
+			bindings = <&macro_tap &to NUM &rgb_ug RGB_COLOR_HSB(HUE_NUM,100,FX_BRT)>;
+		};
+
+		to_func_c: to_func_c {
+			compatible = "zmk,behavior-macro";
+			#binding-cells = <0>;
+			bindings = <&macro_tap &to FUNC &rgb_ug RGB_COLOR_HSB(HUE_FUNC,100,FX_BRT)>;
+		};
+
+		to_kb_c: to_kb_c {
+			compatible = "zmk,behavior-macro";
+			#binding-cells = <0>;
+			bindings = <&macro_tap &to KBCTRL &rgb_ug RGB_COLOR_HSB(HUE_KB,100,FX_BRT)>;
+		};
+
+		to_qw_c: to_qw_c {
+			compatible = "zmk,behavior-macro";
+			#binding-cells = <0>;
+			bindings = <&macro_tap &to QWERTY &rgb_ug RGB_EFF &rgb_ug RGB_EFF &rgb_ug RGB_EFF>;
+		};
+	};
+
 	keymap {
 		compatible = "zmk,keymap";
 
@@ -120,11 +164,11 @@
 //	|			|	To FN	|	[		|	⬇		|	]		|	PGDN	|			|			|			|	.		|	1		|	2		|	3		|	ENTER	|	To QW	|
 //										|			|			|			|			|			|			|			|			|			|
 			bindings = <
-&trans		&trans		&kp LBRC	&rgb_ug RGB_TOG		&kp RBRC	&trans						&trans		&kp FSLH	&kp STAR	&kp PLUS	&kp MINUS	&kp LC(LA(DEL))
-&trans		&to KBCTRL	&kp HOME	&kp UP				&kp END		&kp PG_UP					&kp BSLH	&kp N7		&kp N8		&kp N9		&kp N0		&to QWERTY
-&kp CAPS	&to QWERTY	&kp LEFT	&kp DOWN			&kp RIGHT	&to QWERTY					&kp GRAVE	&kp N4		&kp N5		&kp N6		&kp EQUAL	&none
-&trans		&to FUNC	&kp LBKT	&kp DOWN			&kp RBKT	&kp PG_DN	&trans	&trans	&kp DOT		&kp N1		&kp N2		&kp N3		&kp RET		&to QWERTY
-									&trans				&trans		&trans		&trans	&trans	&trans		&trans		&trans
+&trans		&trans		&kp LBRC	&rgb_ug RGB_TOG	&kp RBRC	&trans						&trans		&kp FSLH	&kp STAR	&kp PLUS	&kp MINUS	&kp LC(LA(DEL))
+&trans		&to_kb_c	&kp HOME	&kp UP			&kp END		&kp PG_UP					&kp BSLH	&kp N7		&kp N8		&kp N9		&kp N0		&to_qw_c
+&kp CAPS	&to_qw_c	&kp LEFT	&kp DOWN		&kp RIGHT	&to_qw_c					&kp GRAVE	&kp N4		&kp N5		&kp N6		&kp EQUAL	&none
+&trans		&to_func_c	&kp LBKT	&kp DOWN		&kp RBKT	&kp PG_DN	&trans	&trans	&kp DOT		&kp N1		&kp N2		&kp N3		&kp RET		&to_qw_c
+									&trans			&trans		&trans		&trans	&trans	&trans		&trans		&trans
 			>;
 		};
 
@@ -137,11 +181,11 @@
 //	|			|	Disp-	|	None	|	⬇		|	None	|	PGDN	|			|			|			|			|			|			|	Mute	|			|			|
 //										|			|			|			|			|			|			|	To QW	|	To NUM	|	To KB	|
 			bindings = <
-&trans		&kp F1			&kp F2		&kp F3		&kp F4		&kp F5						&kp F6		&kp F7			&kp F8			&kp F9	&kp F10	&kp F11
+&trans		&kp F1			&kp F2		&kp F3		&kp F4		&kp F5						&kp F6		&kp F7			&kp F8			&kp F9			&kp F10	&kp F11
 &trans		&kp C_BRI_UP	&kp HOME	&kp UP		&kp END		&kp PG_UP					&trans		&trans			&trans			&kp C_VOL_UP	&trans	&kp F12
-&kp CAPS	&none			&kp LEFT	&kp DOWN	&kp RIGHT	&to QWERTY					&trans		&kp PRINTSCREEN	&rgb_ug RGB_TOG	&kp C_VOL_DN	&trans	&trans
+&kp CAPS	&none			&kp LEFT	&kp DOWN	&kp RIGHT	&to_qw_c					&trans		&kp PRINTSCREEN	&rgb_ug RGB_TOG	&kp C_VOL_DN	&trans	&trans
 &trans		&kp C_BRI_DN	&none		&kp DOWN	&none		&kp PG_DN	&trans	&trans	&trans		&trans			&trans			&kp C_MUTE		&trans	&trans
-										&trans		&trans		&trans		&trans	&trans	&to QWERTY	&to NUM			&to KBCTRL
+										&trans		&trans		&trans		&trans	&trans	&to_qw_c	&to_num_c		&to_kb_c
 			>;
 		};
 
@@ -156,9 +200,9 @@
 			bindings = <
 &bootloader	&trans				&trans			&trans			&trans			&trans							&trans		&trans			&trans			&trans			&trans			&bootloader
 &bt BT_CLR	&bt BT_SEL 0		&bt BT_SEL 1	&bt BT_SEL 2	&bt BT_SEL 3	&bt BT_SEL 4					&trans		&rgb_ug RGB_HUI	&rgb_ug RGB_SAI	&rgb_ug RGB_BRI	&rgb_ug RGB_SPI	&trans
-&trans		&kp LCTRL			&kp LALT		&kp LGUI		&kp LSHFT		&to QWERTY						&trans		&rgb_ug RGB_EFR	&rgb_ug RGB_TOG	&rgb_ug RGB_EFF	&trans			&trans
+&trans		&kp LCTRL			&kp LALT		&kp LGUI		&kp LSHFT		&to_qw_c						&trans		&rgb_ug RGB_EFR	&rgb_ug RGB_TOG	&rgb_ug RGB_EFF	&trans			&trans
 &sys_reset	&ext_power EP_ON	&trans			&trans			&trans			&trans			&trans	&trans	&trans		&rgb_ug RGB_HUD	&rgb_ug RGB_SAD	&rgb_ug RGB_BRD	&rgb_ug RGB_SPD	&sys_reset
-												&trans			&trans			&trans			&trans	&trans	&to QWERTY	&to NUM			&to FUNC
+												&trans			&trans			&trans			&trans	&trans	&to_qw_c	&to_num_c		&to_func_c
 			>;
 		};
 	};
