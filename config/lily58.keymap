@@ -88,13 +88,6 @@
 			bindings = <&kp>, <&kp>;
 		};
 
-		shift_cw: shift_caps_word {
-			compatible = "zmk,behavior-hold-tap";
-			#binding-cells = <2>;
-			flavor = "balanced";
-			tapping-term-ms = <200>;
-			bindings = <&kp>, <&caps_word>;
-		};
 	};
 
 	macros {
@@ -144,13 +137,13 @@
 //	|	`		|	1		|	2		|	3		|	4		|	5		|									|	6		|	7		|	8		|	9		|	0		|	-		|
 //	|	TAB		|	Q		|	W		|	E		|	R		|	T		|									|	Y		|	U		|	I		|	O		|	P		|	\		|
 //	|	LCTRL	|	⌃ A		|	⌥ S		|	⌘ D		|	⇧ F		|	G		|									|	H		|	⇧ J		|	⌘ K		|	⌥ L		|	⌃ ;		|	'		|
-//	|	⇧/cpWd	|	Z		|	X		|	C		|	V		|	B		|	ESC		|			|	DEL		|	N		|	M		|	,		|	.		|	/		|	⇧/=		|
+//	|	  ⇧ 	|	Z		|	X		|	C		|	V		|	B		|	ESC		|			|	DEL		|	N		|	M		|	,		|	.		|	/		|	⇧/=		|
 //										|	⌥ ⬅		|	⌘ ⮕		|	␣		|	ENTER	|			|	BSPC	|	To NUM	|	⌘ ⬆		|	⌥ ⬇		|
 			bindings = <
 &kp GRAVE			&kp N1		&kp N2		&kp N3			&kp N4			&kp N5							&kp N6		&kp N7		&kp N8			&kp N9		&kp N0			&kp MINUS
 &kp TAB				&kp Q		&kp W		&kp E			&kp R			&kp T							&kp Y		&kp U		&kp I			&kp O		&kp P			&kp BSLH
 &kp LCTRL			&hm LCTRL A	&hm LALT S	&hm LGUI D		&mt LSHFT F		&kp G							&kp H		&mt RSHFT J	&hmr RGUI K		&hmr RALT L	&hmr LCTRL SEMI	&kp SQT
-&shift_cw LSHFT 0	&kp Z		&kp X		&kp C			&kp V			&kp B		&kp ESC	&kp DEL		&kp N		&kp M		&kp COMMA		&kp DOT		&kp FSLH		&mt RSHFT EQUAL
+&kp LSHFT			&kp Z		&kp X		&kp C			&kp V			&kp B		&kp ESC	&kp DEL		&kp N		&kp M		&kp COMMA		&kp DOT		&kp FSLH		&mt RSHFT EQUAL
 											&mt LALT LEFT	&mt LGUI RIGHT	&kp SPACE	&kp RET	&kp BSPC	MO_TOG(NUM)	&mt LGUI UP	&mt LALT DOWN
 			>;
 		};
@@ -177,13 +170,13 @@
 //	-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //	|			|	F1		|	F2		|	F3		|	F4		|	F5		|									|	F6		|	F7		|	F8		|	F9		|	F10		|	F11		|
 //	|			|	Disp+	|	HOME	|	⬆		|	END		|	PGUP	|									|			|			|			|	Vol +	|			|	F12		|
-//	|	CAPS	|	None	|	⬅		|	⬇		|	⮕		|	To QW	|									|			|	PRTSC	|	RGB Tog	|	Vol -	|			|			|
+//	|			|	None	|	⬅		|	⬇		|	⮕		|	To QW	|									|			|	PRTSC	|	RGB Tog	|	Vol -	|			|			|
 //	|			|	Disp-	|	None	|	⬇		|	None	|	PGDN	|			|			|			|			|			|			|	Mute	|			|			|
 //										|			|			|			|			|			|			|	To QW	|	To NUM	|	To KB	|
 			bindings = <
 &trans		&kp F1			&kp F2		&kp F3		&kp F4		&kp F5						&kp F6		&kp F7			&kp F8			&kp F9			&kp F10	&kp F11
 &trans		&kp C_BRI_UP	&kp HOME	&kp UP		&kp END		&kp PG_UP					&trans		&trans			&trans			&kp C_VOL_UP	&trans	&kp F12
-&kp CAPS	&none			&kp LEFT	&kp DOWN	&kp RIGHT	&to_qw_c					&trans		&kp PRINTSCREEN	&rgb_ug RGB_TOG	&kp C_VOL_DN	&trans	&trans
+&trans		&none			&kp LEFT	&kp DOWN	&kp RIGHT	&to_qw_c					&trans		&kp PRINTSCREEN	&rgb_ug RGB_TOG	&kp C_VOL_DN	&trans	&trans
 &trans		&kp C_BRI_DN	&none		&kp DOWN	&none		&kp PG_DN	&trans	&trans	&trans		&trans			&trans			&kp C_MUTE		&trans	&trans
 										&trans		&trans		&trans		&trans	&trans	&to_qw_c	&to_num_c		&to_kb_c
 			>;
