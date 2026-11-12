@@ -88,6 +88,18 @@
 			bindings = <&kp>, <&kp>;
 		};
 
+		// Shift on the index fingers: gentler than hm/hmr so quick capitals work
+		hms: homerow_shift {
+			compatible = "zmk,behavior-hold-tap";
+			#binding-cells = <2>;
+			flavor = "balanced";
+			tapping-term-ms = <220>;
+			quick-tap-ms = <150>;
+			require-prior-idle-ms = <100>;
+			retro-tap;
+			bindings = <&kp>, <&kp>;
+		};
+
 	};
 
 	macros {
@@ -140,11 +152,11 @@
 //	|	  ⇧ 	|	Z		|	X		|	C		|	V		|	B		|	ESC		|			|	DEL		|	N		|	M		|	,		|	.		|	/		|	⇧/=		|
 //										|	⌥ ⬅		|	⌘ ⮕		|	␣		|	ENTER	|			|	BSPC	|	To NUM	|	⌘ ⬆		|	⌥ ⬇		|
 			bindings = <
-&kp GRAVE			&kp N1		&kp N2		&kp N3			&kp N4			&kp N5							&kp N6		&kp N7		&kp N8			&kp N9		&kp N0			&kp MINUS
-&kp TAB				&kp Q		&kp W		&kp E			&kp R			&kp T							&kp Y		&kp U		&kp I			&kp O		&kp P			&kp BSLH
-&kp LCTRL			&hm LCTRL A	&hm LALT S	&hm LGUI D		&mt LSHFT F		&kp G							&kp H		&mt RSHFT J	&hmr RGUI K		&hmr RALT L	&hmr LCTRL SEMI	&kp SQT
-&kp LSHFT			&kp Z		&kp X		&kp C			&kp V			&kp B		&kp ESC	&kp DEL		&kp N		&kp M		&kp COMMA		&kp DOT		&kp FSLH		&mt RSHFT EQUAL
-											&mt LALT LEFT	&mt LGUI RIGHT	&kp SPACE	&kp RET	&kp BSPC	MO_TOG(NUM)	&mt LGUI UP	&mt LALT DOWN
+&kp GRAVE	&kp N1		&kp N2		&kp N3			&kp N4			&kp N5							&kp N6		&kp N7			&kp N8			&kp N9		&kp N0			&kp MINUS
+&kp TAB		&kp Q		&kp W		&kp E			&kp R			&kp T							&kp Y		&kp U			&kp I			&kp O		&kp P			&kp BSLH
+&kp LCTRL	&hm LCTRL A	&hm LALT S	&hm LGUI D		&hms LSHFT F	&kp G							&kp H		&hms RSHFT J	&hmr RGUI K		&hmr RALT L	&hmr LCTRL SEMI	&kp SQT
+&kp LSHFT	&kp Z		&kp X		&kp C			&kp V			&kp B		&kp ESC	&kp DEL		&kp N		&kp M			&kp COMMA		&kp DOT		&kp FSLH		&mt RSHFT EQUAL
+									&mt LALT LEFT	&mt LGUI RIGHT	&kp SPACE	&kp RET	&kp BSPC	MO_TOG(NUM)	&mt LGUI UP		&mt LALT DOWN
 			>;
 		};
 
